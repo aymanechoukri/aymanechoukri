@@ -1,16 +1,23 @@
-## Hi there 👋
+# 👋 Welcome to My Digital Garden!  
 
-<!--
-**aymanechoukri/aymanechoukri** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+🚀 **Quick Facts About Me**  
+- 🌍 Currently crafting amazing web experiences  
+- 💡 Always exploring new web technologies  
+- 🌐 Building the next generation of web apps  
+- 🎮 Gaming enthusiast when not coding  
 
-Here are some ideas to get you started:
+---
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+### 🛠️ Tech Stack  
+![JavaScript](https://img.shields.io/badge/Code-JavaScript-yellow?logo=javascript)  
+![Web Dev](https://img.shields.io/badge/Working%20With-Web%20Development-blue)  
+![Dark Mode](https://img.shields.io/badge/Prefers-Dark%20Mode-black)  
+![Coffee](https://img.shields.io/badge/Powered%20By-Coffee-brown)  
+
+---
+
+📊 **GitHub Stats**  
+![My GitHub stats](https://github-readme-stats.vercel.app/api?username=USERNAME&show_icons=true&theme=radical)  
+
+📈 **GitHub Streaks**  
+![GitHub Streak](https://streak-stats.demolab.com?user=USERNAME&theme=dark)  
