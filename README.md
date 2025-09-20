@@ -1,26 +1,31 @@
-<!-- Banner / Title -->
-<h1 align="center">🌟 Welcome to My Digital Garden 🌟</h1>
+<!-- خلفية متحركة (Matrix Rain) -->
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?color=00F700&size=24&center=true&vCenter=true&lines=Web+Developer;JavaScript+Lover;Dark+Mode+Fan;Coffee+Powered+☕" />
+  <img src="https://i.ibb.co/4VY4DxP/matrix-code.gif" alt="Matrix Code" width="100%" />
 </p>
 
 ---
 
-## 🚀 Quick Facts About Me
-- 🔥 Currently crafting amazing **web experiences**  
-- 💡 Always exploring **new technologies**  
-- 🌐 Building the **next generation of web apps**  
-- 🎮 Gaming enthusiast when not coding  
+# 👋 Hello World!
+
+## ⚡ My Skills
+<p align="center">
+  <img src="https://img.shields.io/badge/Code-HTML-orange?logo=html5&logoColor=white" />
+  <img src="https://img.shields.io/badge/Style-CSS-blue?logo=css3&logoColor=white" />
+  <img src="https://img.shields.io/badge/Script-JavaScript-yellow?logo=javascript&logoColor=black" />
+  <img src="https://img.shields.io/badge/Library-React.js-61DBFB?logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/Runtime-Node.js-green?logo=node.js&logoColor=white" />
+  <img src="https://img.shields.io/badge/Framework-Laravel-red?logo=laravel&logoColor=white" />
+  <img src="https://img.shields.io/badge/Lang-Python-blue?logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Lang-Java-red?logo=java&logoColor=white" />
+  <img src="https://img.shields.io/badge/Frontend%20%26%20Backend-Full%20Stack-green" />
+</p>
 
 ---
 
-## 🛠️ Tech Stack
-<p align="center">
-  <img src="https://img.shields.io/badge/Code-JavaScript-yellow?logo=javascript" />
-  <img src="https://img.shields.io/badge/Working%20With-Web%20Development-blue" />
-  <img src="https://img.shields.io/badge/Prefers-Dark%20Mode-black" />
-  <img src="https://img.shields.io/badge/Powered%20By-Coffee-brown" />
-</p>
+## 📝 About Me
+✨ I’m passionate about **web development**.  
+🌱 Currently learning and growing my skills.  
+🚀 My goal is to become a **Full Stack Developer**.  
 
 ---
 
@@ -30,11 +35,3 @@
   <img src="https://streak-stats.demolab.com?user=USERNAME&theme=radical" height="165"/>
 </p>
 
----
-
-## 🌍 Connect With Me
-<p align="center">
-  <a href="https://linkedin.com/in/USERNAME"><img src="https://img.shields.io/badge/LinkedIn-blue?logo=linkedin&logoColor=white" /></a>
-  <a href="https://twitter.com/USERNAME"><img src="https://img.shields.io/badge/Twitter-%231DA1F2.svg?logo=Twitter&logoColor=white" /></a>
-  <a href="mailto:USERNAME@gmail.com"><img src="https://img.shields.io/badge/Gmail-D14836?logo=gmail&logoColor=white" /></a>
-</p>
