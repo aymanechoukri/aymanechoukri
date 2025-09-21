@@ -1,40 +1,64 @@
-<!-- خلفية متحركة (Matrix Rain) --><!-- Animated Banner -->
-<p align="center">
-  <img src="./coding-banner.svg" alt="Coding Banner" width="100%" />
-</p>
+<!-- خلفية متحركة (Matrix Rain) --><!-- Animated Banner --># Hi there, I'm [Your Name] 👋
+
+Welcome to my GitHub profile!
 
 ---
 
-# 👋 Hi, I'm YOUR_NAME
+## About Me
 
-💻 Passionate Web Developer — working to become a **Full Stack Developer**.  
-🌱 Skills: HTML • CSS • JavaScript • React.js • Node.js • Laravel • Python • Java • Frontend • Backend.
-
----
-
-## 🚀 Skills
-<p align="center">
-  <img src="https://img.shields.io/badge/HTML5-orange?logo=html5&logoColor=white" />
-  <img src="https://img.shields.io/badge/CSS3-blue?logo=css3&logoColor=white" />
-  <img src="https://img.shields.io/badge/JavaScript-yellow?logo=javascript&logoColor=black" />
-  <img src="https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black" />
-  <img src="https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white" />
-  <img src="https://img.shields.io/badge/Laravel-FF2D20?logo=laravel&logoColor=white" />
-  <img src="https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white" />
-  <img src="https://img.shields.io/badge/Java-007396?logo=java&logoColor=white" />
-</p>
+I'm a passionate web developer skilled in both frontend and backend technologies. I love building interactive and efficient web applications.
 
 ---
 
-## 🎯 Goal
-> To become a Full Stack Developer — building robust frontend and backend apps.
+## Skills
+
+- **Frontend:** HTML, CSS, JavaScript, React.js  
+- **Backend:** Node.js, Express  
+- **Databases:** PostgreSQL, MongoDB  
+- **Tools & Platforms:** VSCode, Linux, Git/GitHub, npm  
 
 ---
 
-## 📌 How to activate
-1. Create repository named `USERNAME`.  
-2. Upload `coding-banner.svg` and this `README.md` to repo root.  
-3. Replace `YOUR_NAME` and `USERNAME` with your info, commit & push.
+## Background Sneak Move Animation
+
+<div align="center">
+
+<style>
+  body {
+    margin: 0;
+    height: 150px;
+    overflow: hidden;
+    background: linear-gradient(270deg, #ff6ec4, #7873f5, #4ade80, #facc15);
+    background-size: 800% 800%;
+    animation: backgroundMove 20s ease infinite;
+  }
+
+  @keyframes backgroundMove {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+</style>
+
+</div>
+
+---
+
+## Let's Connect!
+
+- [GitHub](https://github.com/yourusername)  
+- [LinkedIn](https://linkedin.com/in/yourprofile)  
+- [Twitter](https://twitter.com/yourhandle)  
+
+---
+
+Thanks for visiting my profile! 🚀
 
 
 
