@@ -1,20 +1,18 @@
-<!-- خلفية متحركة (Matrix Rain) -->
-<!-- 🌌 Animated Banner -->
+<!-- خلفية متحركة (Matrix Rain) --><!-- Animated Banner -->
 <p align="center">
-  <img src="https://i.ibb.co/4VY4DxP/matrix-code.gif" alt="Matrix Code" width="100%" />
+  <img src="./coding-banner.svg" alt="Coding Banner" width="100%" />
 </p>
 
 ---
 
-# 👋 Hi, I'm [Your Name]
+# 👋 Hi, I'm YOUR_NAME
 
-💻 A passionate **Web Developer** learning every day to become a **Full Stack Developer**.  
-⚡ Currently focusing on building amazing **frontend** and **backend** projects.  
-☕ Powered by **coffee** & **curiosity**.  
+💻 Passionate Web Developer — working to become a **Full Stack Developer**.  
+🌱 Skills: HTML • CSS • JavaScript • React.js • Node.js • Laravel • Python • Java • Frontend • Backend.
 
 ---
 
-## 🚀 Skills & Technologies
+## 🚀 Skills
 <p align="center">
   <img src="https://img.shields.io/badge/HTML5-orange?logo=html5&logoColor=white" />
   <img src="https://img.shields.io/badge/CSS3-blue?logo=css3&logoColor=white" />
@@ -24,29 +22,19 @@
   <img src="https://img.shields.io/badge/Laravel-FF2D20?logo=laravel&logoColor=white" />
   <img src="https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white" />
   <img src="https://img.shields.io/badge/Java-007396?logo=java&logoColor=white" />
-  <img src="https://img.shields.io/badge/Frontend%20%26%20Backend-Full%20Stack-success" />
 </p>
 
 ---
 
-## 🌱 My Goal
-> 🎯 To become a **Full Stack Developer**, mastering both frontend & backend technologies.
+## 🎯 Goal
+> To become a Full Stack Developer — building robust frontend and backend apps.
 
 ---
 
-## 📊 GitHub Stats
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=USERNAME&show_icons=true&theme=radical" height="160" />
-  <img src="https://streak-stats.demolab.com?user=USERNAME&theme=radical" height="160" />
-</p>
+## 📌 How to activate
+1. Create repository named `USERNAME`.  
+2. Upload `coding-banner.svg` and this `README.md` to repo root.  
+3. Replace `YOUR_NAME` and `USERNAME` with your info, commit & push.
 
----
-
-## 🔗 Connect with Me
-<p align="center">
-  <a href="mailto:USERNAME@gmail.com"><img src="https://img.shields.io/badge/Gmail-D14836?logo=gmail&logoColor=white" /></a>
-  <a href="https://linkedin.com/in/USERNAME"><img src="https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white" /></a>
-  <a href="https://twitter.com/USERNAME"><img src="https://img.shields.io/badge/Twitter-1DA1F2?logo=twitter&logoColor=white" /></a>
-</p>
 
 
