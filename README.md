@@ -9,6 +9,11 @@
   <img src="https://img.shields.io/badge/Powered_By-Coffee-brown?style=for-the-badge&logoColor=white&logo=buy-me-a-coffee" />
 </p>
 
+## 🎓 Certifications
+- [Responsive Web Design Certification - freeCodeCamp](https://www.freecodecamp.org/certification/aymanchokri/responsive-web-design)
+
+[![freeCodeCamp](https://img.shields.io/badge/freeCodeCamp-Responsive%20Web%20Design-brightgreen)](https://www.freecodecamp.org/certification/aymanchokri/responsive-web-design)
+
 # 🌟 Welcome to My Digital Garden! 
 
 
