@@ -11,11 +11,12 @@
 
 ## 🎓 Certifications
 
-- [Responsive Web Design Certification - freeCodeCamp](https://www.freecodecamp.org/certification/aymanchokri/responsive-web-design)
+- [Responsive Web Design Certification - freeCodeCamp](https://www.freecodecamp.org/certification/aymanchokri/responsive-web-design-v9)
 - [JavaScript Algorithms and Data Structures Certification - freeCodeCamp](https://www.freecodecamp.org/certification/aymanchokri/javascript-v9)
 
-[![freeCodeCamp - Responsive Web Design](https://img.shields.io/badge/freeCodeCamp-Responsive%20Web%20Design-brightgreen)](https://www.freecodecamp.org/certification/aymanchokri/responsive-web-design)
+[![freeCodeCamp - Responsive Web Design](https://img.shields.io/badge/freeCodeCamp-Responsive%20Web%20Design-brightgreen)](https://www.freecodecamp.org/certification/aymanchokri/responsive-web-design-v9)
 [![freeCodeCamp - JavaScript](https://img.shields.io/badge/freeCodeCamp-JavaScript-brightgreen)](https://www.freecodecamp.org/certification/aymanchokri/javascript-v9)
+
 
 
 # 🌟 Welcome to My Digital Garden! 
