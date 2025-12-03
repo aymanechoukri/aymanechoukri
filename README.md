@@ -11,6 +11,7 @@
 
 ## 🎓 Certifications
 - [Responsive Web Design Certification - freeCodeCamp](https://www.freecodecamp.org/certification/aymanchokri/responsive-web-design)
+- [Java Script Cartification - freeCodeCamp] (https://www.freecodecamp.org/certification/aymanchokri/javascript-v9)
 
 [![freeCodeCamp](https://img.shields.io/badge/freeCodeCamp-Responsive%20Web%20Design-brightgreen)](https://www.freecodecamp.org/certification/aymanchokri/responsive-web-design)
 
