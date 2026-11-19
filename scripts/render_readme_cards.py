@@ -3,7 +3,7 @@
 Render the profile README's cards as animated SVGs into cards/.
 
 Design: "Three Worlds", matched to github.com/aymanechoukri (paper, ink, and one colour per
-world: BUILD blue, BRAND red, LEARN yellow; Instrument Serif, Geist, Geist Mono).
+world: BUILD red, CODE burgundy, LEARN gold; Instrument Serif, Geist, Geist Mono).
 
 Every card is a standalone SVG shown through <img>, so it can only use what GitHub
 allows there: inline CSS animations, SMIL and fonts embedded as data URIs (no JS,
@@ -29,7 +29,7 @@ OUT = os.path.join(ROOT, "cards")
 FONTS = os.path.join(ROOT, "fonts")
 PORTRAIT = os.path.join(ROOT, "assets", "aymane-ascii.svg")
 
-# ---- hand-set numbers (update from avivashishta.com data/stats.json) --------
+# ---- hand-set numbers (update from github.com/aymanechoukri data/stats.json) --------
 REEL_VIEWS = "API"
 BLOG_READERS = "2026"
 
@@ -177,7 +177,7 @@ def hero():
   {text_lines(48, 338, ["I build useful web applications,", "and keep learning by building projects."], 27, f'font-family="{SANS}" font-size="18" fill="{INK_SOFT}"')}
 </g>
 <g class="f" {d(0.8)}>
-  <text x="48" y="396" font-family="{MONO}" font-size="13" fill="{INK}">avivashishta.com</text>
+  <text x="48" y="396" font-family="{MONO}" font-size="13" fill="{INK}">github.com/aymanechoukri</text>
   <text class="nu" x="186" y="396" font-family="{MONO}" font-size="13" fill="{TECH}">&#8599;</text>
 </g>
 <g transform="translate(520 46) scale({s}) translate(-20 -37)" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
