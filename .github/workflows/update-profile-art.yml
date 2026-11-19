@@ -39,4 +39,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: refresh profile art [skip ci]"
-          file_pattern: "data/contributions.json assets/aymane-profile-prepped.png assets/aymane-ascii.svg contrib-heatmap.svg stats.svg cards/*.svg"
+          file_pattern: "data/contributions.json assets/aymane-profile-prepped.png assets/aymane-ascii.svg assets/aymane-avatar-cutout.png contrib-heatmap.svg stats.svg cards/*.svg"
