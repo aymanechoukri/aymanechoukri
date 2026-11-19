@@ -208,8 +208,9 @@ def repo_stars():
 def repo_card(index,name,description,language,accent,stars):
     width=880/3-8; height=176
     metadata=f"{language}  ·  ★ {stars}" if stars else language
-    body=f'<rect width="{width}" height="{height}" rx="14" fill="{PAPER}"/><g class="r" {delay(4.6+index*.12)}><rect x="24" y="30" width="8" height="8" rx="2" fill="{accent}"/><text x="40" y="39" font-family="{SANS}" font-weight="600" font-size="17" fill="{INK}">{escape(name)}</text>{lines_svg(24,72,wrap(description,34),21,f"font-family=\\"{SANS}\\" font-size=\\"13\\" fill=\\"{INK_SOFT}\\"")}<text x="24" y="152" font-family="{MONO}" font-size="11" fill="{MUTED}">{metadata}</text></g>'
-    write("repo-"+name+".svg",svg(width,height,body,name+": "+description,left=0))
+    desc_svg=lines_svg(24,72,wrap(description,34),21,f'font-family="{SANS}" font-size="13" fill="{INK_SOFT}"')
+    body=f'<rect width="{width}" height="{height}" rx="14" fill="{PAPER}"/><g class="r" {delay(4.6+index*.12)}><rect x="24" y="30" width="8" height="8" rx="2" fill="{accent}"/><text x="40" y="39" font-family="{SANS}" font-weight="600" font-size="17" fill="{INK}">{escape(name)}</text>{desc_svg}<text x="24" y="152" font-family="{MONO}" font-size="11" fill="{MUTED}">{metadata}</text></g>'
+    write("repo-"+name+".svg",svg(width,height,body,name+": "+description))
 
 def section_title():
     for theme,foreground in [("light",INK),("dark","#f0ece6")]:
