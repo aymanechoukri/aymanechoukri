@@ -1,0 +1,33 @@
+name: Update profile art
+
+"on":
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  profile-art:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install renderer dependencies
+        run: pip install -r scripts/requirements.txt
+      - name: Fetch public GitHub contribution data
+        env:
+          GH_PROFILE_USER: aymanechoukri
+        run: python scripts/fetch_contributions.py
+      - name: Render profile SVG cards
+        run: python scripts/render_readme_cards.py
+      - name: Commit refreshed cards
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: refresh animated profile cards [skip ci]"
+          file_pattern: "data/contributions.json cards/*.svg"
