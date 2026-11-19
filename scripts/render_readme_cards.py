@@ -27,7 +27,7 @@ ROOT = os.path.join(HERE, "..")
 DATA = os.path.join(ROOT, "data", "contributions.json")
 OUT = os.path.join(ROOT, "cards")
 FONTS = os.path.join(ROOT, "fonts")
-PORTRAIT = os.path.join(ROOT, "assets", "aymane-ascii.svg")
+AVATAR = os.path.join(ROOT, "assets", "aymane-profile-avatar.jpg")
 
 # ---- hand-set numbers (update from github.com/aymanechoukri data/stats.json) --------
 REEL_VIEWS = "API"
@@ -144,18 +144,8 @@ def text_lines(x, y, lines, lh, attrs):
 # ---- 1 · hero -----------------------------------------------------------------
 def hero():
     h = 420
-    src = open(PORTRAIT).read()
-    rows = re.findall(r'<text xml:space="preserve"[^>]*\by="([\d.]+)"[^>]*>(.*?)</text>', src, re.S)
-    n = len(rows)
-    portrait = []
-    for i, (y, txt) in enumerate(rows):
-        # rows "print" top to bottom like a slow terminal
-        portrait.append(
-            f'<text class="f" style="animation-delay:{0.25 + i * 0.018:.3f}s;animation-duration:.35s" '
-            f'xml:space="preserve" x="20" y="{y}" fill="{INK}" font-size="7.2" '
-            f'textLength="800" lengthAdjust="spacing">{txt}</text>'
-        )
-    s = 0.41
+    avatar_data = open(os.path.join(ROOT, "assets", "aymane-profile-avatar.jpg"), "rb").read()
+    avatar_b64 = base64.b64encode(avatar_data).decode("ascii")
     body = f"""
 <defs>
   <linearGradient id="shine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="600" y2="0">
@@ -180,8 +170,15 @@ def hero():
   <text x="48" y="396" font-family="{MONO}" font-size="13" fill="{INK}">github.com/aymanechoukri</text>
   <text class="nu" x="186" y="396" font-family="{MONO}" font-size="13" fill="{TECH}">&#8599;</text>
 </g>
-<g transform="translate(520 46) scale({s}) translate(-20 -37)" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
-  {''.join(portrait)}
+<defs>
+  <clipPath id="portraitClip"><rect x="528" y="54" width="310" height="310" rx="22"/></clipPath>
+  <linearGradient id="portraitFrame" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="{TECH}"/><stop offset="1" stop-color="{LEARN}"/>
+  </linearGradient>
+</defs>
+<rect x="520" y="46" width="326" height="326" rx="28" fill="url(#portraitFrame)" opacity=".95"/>
+<g clip-path="url(#portraitClip)">
+  <image href="data:image/jpeg;base64,{avatar_b64}" x="528" y="54" width="310" height="310" preserveAspectRatio="xMidYMid meet"/>
 </g>
 """
     write("hero.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
