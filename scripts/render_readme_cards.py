@@ -36,7 +36,10 @@ CSS="""
 @media(prefers-reduced-motion:reduce){.r,.f,.g,.p,.live,.ti,.sh{animation:none!important;opacity:1!important;transform:none!important}.sh{display:none}}
 """
 
-def svg(width,height,body,label,bottom=12):
+def svg(width,height,body,label,bottom=12,left=0,right=0):
+    if left:
+        body=f'<g transform="translate({left} 0)">{body}</g>'
+    width += left + right
     css=CSS
     if os.getenv("STATIC"):
         css += ".r,.f,.g,.p,.live,.ti{animation:none!important;opacity:1!important;transform:none!important}.sh{display:none}"
@@ -138,7 +141,7 @@ def tile(name,label,color,foreground,value,unit,description,stagger,index):
  {desc}
 </g>
 """
-    write(name+".svg",svg(TILE_W,TILE_H,body,f"{label}: {value} {unit}. {description}",left=0) if False else svg(TILE_W,TILE_H,body,f"{label}: {value} {unit}. {description}"))
+    write(name+".svg",svg(TILE_W,TILE_H,body,f"{label}: {value} {unit}. {description}",left=4*index,right=8-4*index))
 
 def load_data():
     if not DATA.exists(): raise FileNotFoundError("Run scripts/fetch_contributions.py first.")
@@ -210,7 +213,7 @@ def repo_card(index,name,description,language,accent,stars):
     metadata=f"{language}  ·  ★ {stars}" if stars else language
     desc_svg=lines_svg(24,72,wrap(description,34),21,f'font-family="{SANS}" font-size="13" fill="{INK_SOFT}"')
     body=f'<rect width="{width}" height="{height}" rx="14" fill="{PAPER}"/><g class="r" {delay(4.6+index*.12)}><rect x="24" y="30" width="8" height="8" rx="2" fill="{accent}"/><text x="40" y="39" font-family="{SANS}" font-weight="600" font-size="17" fill="{INK}">{escape(name)}</text>{desc_svg}<text x="24" y="152" font-family="{MONO}" font-size="11" fill="{MUTED}">{metadata}</text></g>'
-    write("repo-"+name+".svg",svg(width,height,body,name+": "+description))
+    write("repo-"+name+".svg",svg(width,height,body,name+": "+description,left=4*index,right=8-4*index))
 
 def section_title():
     for theme,foreground in [("light",INK),("dark","#f0ece6")]:
