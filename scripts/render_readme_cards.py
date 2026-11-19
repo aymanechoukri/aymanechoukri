@@ -1,91 +1,231 @@
 #!/usr/bin/env python3
-"""Render red editorial SVG cards using GitHub contribution data."""
-import json, os, urllib.request
-from datetime import date, timedelta
-from pathlib import Path
+"""Render Aymane's GitHub profile as a stack of animated, self-contained SVG cards."""
+import datetime, json, os, re
 from html import escape
+from pathlib import Path
+import requests
 
 ROOT=Path(__file__).resolve().parents[1]
-CARDS=ROOT/"cards"
-CARDS.mkdir(exist_ok=True)
+DATA=ROOT/"data/contributions.json"
+OUT=ROOT/"cards"
+OUT.mkdir(exist_ok=True)
 USER="aymanechoukri"
-RED="#B83232"; PAPER="#F4EFE6"; INK="#242321"; MUTED="#756F68"; GOLD="#D9B85A"
+PAPER="#f3f0e9"; PAPER_DARK="#e7dfd3"; INK="#211f1d"; INK_SOFT="#514943"
+MUTED="#81766d"; RULE="#d8cec2"; RED="#b83232"; RED_DARK="#841e21"
+RED_MID="#d9685d"; RED_PALE="#f0d5cf"; GOLD="#c9a24a"
+W=880
+SERIF="Georgia, 'Times New Roman', serif"
+SANS="Arial, Helvetica, sans-serif"
+MONO="'SFMono-Regular', Consolas, 'Liberation Mono', monospace"
 
-def doc(w,h,body):
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">
-<title>Aymane Chokri — GitHub profile</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap');
-.serif{{font-family:'Instrument Serif',Georgia,serif}} .mono{{font-family:'DM Mono',monospace}}
-.rise{{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}} @keyframes rise{{from{{opacity:0;transform:translateY(14px)}}to{{opacity:1;transform:translateY(0)}}}}
-@media(prefers-reduced-motion:reduce){{*,*::before,*::after{{animation:none!important}}}}
-</style>{body}</svg>'''
+CSS="""
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes pop{0%{opacity:0;transform:scale(.3)}70%{opacity:1;transform:scale(1.15)}100%{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes tilein{0%{opacity:0;transform:translateY(90px) scale(.6) rotate(-9deg)}55%{opacity:1;transform:translateY(-10px) scale(1.05) rotate(2deg)}100%{opacity:1;transform:none}}
+@keyframes sheen{0%{transform:translateX(-220px) skewX(-20deg)}22%,100%{transform:translateX(380px) skewX(-20deg)}}
+.r{opacity:0;animation:rise .8s cubic-bezier(.2,.7,.2,1) both;transform-box:fill-box}
+.f{opacity:0;animation:fade .9s ease-out both}
+.g{transform-box:fill-box;transform-origin:bottom;transform:scaleY(0);animation:grow .8s ease both}
+.p{opacity:0;transform-box:fill-box;animation:pop .4s ease-out both}
+.live{animation:pulse 1.6s ease-in-out infinite}
+.ti{opacity:0;transform-box:fill-box;animation:tilein 1.1s cubic-bezier(.2,.8,.2,1) both}
+.sh{animation:sheen 5s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.r,.f,.g,.p,.live,.ti,.sh{animation:none!important;opacity:1!important;transform:none!important}.sh{display:none}}
+"""
 
-def contributions():
-    token=os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
-    if not token: raise RuntimeError("No token available")
-    start=(date.today()-timedelta(days=365)).isoformat()
-    end=date.today().isoformat()
-    query={"query":'query($login:String!,$from:DateTime!,$to:DateTime!){user(login:$login){contributionsCollection(from:$from,to:$to){contributionCalendar{totalContributions weeks{contributionDays{date contributionCount}}}}}}',
-           "variables":{"login":USER,"from":start+"T00:00:00Z","to":end+"T23:59:59Z"}}
-    req=urllib.request.Request("https://api.github.com/graphql",data=json.dumps(query).encode(),
-       headers={"Authorization":"Bearer "+token,"Content-Type":"application/json","User-Agent":"profile-readme"})
-    with urllib.request.urlopen(req,timeout=25) as res: payload=json.load(res)
-    if payload.get("errors"): raise RuntimeError(str(payload["errors"]))
-    cal=payload["data"]["user"]["contributionsCollection"]["contributionCalendar"]
-    return {"total":cal["totalContributions"],"days":[d for week in cal["weeks"] for d in week["contributionDays"]]}
+def svg(width,height,body,label,bottom=12):
+    css=CSS
+    if os.getenv("STATIC"):
+        css += ".r,.f,.g,.p,.live,.ti{animation:none!important;opacity:1!important;transform:none!important}.sh{display:none}"
+    height += bottom
+    return f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-label="{escape(label)}"><title>{escape(label)}</title><style>{css}</style>{body}</svg>'
+
+def write(name,content):
+    (OUT/name).write_text(content,encoding="utf-8")
+    print(f"wrote cards/{name}")
+
+def delay(seconds):
+    return f'style="animation-delay:{seconds:.2f}s"'
+
+def wrap(text,limit):
+    rows=[]; row=""
+    for word in text.split():
+        if row and len(row)+len(word)+1>limit:
+            rows.append(row); row=word
+        else: row=f"{row} {word}".strip()
+    return rows+[row] if row else rows
+
+def lines_svg(x,y,rows,line_height,attrs):
+    return "".join(f'<text x="{x}" y="{y+i*line_height}" {attrs}>{escape(row)}</text>' for i,row in enumerate(rows))
 
 def hero():
-    portrait=["      .-''''-.      ","     /  .--.  \\\\     ","    |  | o o |  |    ","    |  |  ^  |  |    ","     \\\\  '--'  /     ","      '-.__.-'      ","        /||\\\\         ","       /_||_\\\\        "]
-    art="".join(f'<text x="38" y="{130+i*13}" class="mono" font-size="10" fill="{RED}">{escape(line)}</text>' for i,line in enumerate(portrait))
-    body=f'''<rect width="900" height="260" rx="18" fill="{PAPER}"/><path d="M0 0H900V8H0Z" fill="{RED}"/>
-<text x="34" y="48" class="mono" font-size="11" letter-spacing="2" fill="{MUTED}">INDEPENDENT DEVELOPER / MOROCCO</text>
-<text x="34" y="105" class="serif rise" font-size="54" fill="{INK}">Aymane Chokri</text>
-<text x="34" y="238" class="mono" font-size="11" fill="{MUTED}">BUILD WITH PURPOSE. LEARN IN PUBLIC.</text>{art}
-<text x="360" y="151" class="serif" font-size="25" fill="{INK}">I turn ideas into useful</text><text x="360" y="183" class="serif" font-size="25" fill="{RED}">web experiences.</text>
-<text x="360" y="216" class="mono" font-size="11" fill="{MUTED}">FRONTEND · BACKEND · CONTINUOUS LEARNING</text>'''
-    (CARDS/"hero.svg").write_text(doc(900,260,body),encoding="utf-8")
+    h=420
+    portrait=[
+      "     .----------------.",
+      "     |  $ whoami      |",
+      "     |  aymane        |",
+      "     |                |",
+      "     |   .--------.   |",
+      "     |  /  o    o  \\  |",
+      "     | |     ^      | |",
+      "     |  \\  '----'  /  |",
+      "     |   '--------'   |",
+      "     |   /|  CODE |\\  |",
+      "     |  /_|_______|_\\ |",
+      "     '----------------'",
+    ]
+    portrait_svg="".join(
+      f'<text class="f" style="animation-delay:{.2+i*.07:.2f}s" x="0" y="{92+i*17}" font-family="{MONO}" font-size="12" fill="{RED}">{escape(row)}</text>'
+      for i,row in enumerate(portrait)
+    )
+    body=f"""
+<rect width="{W}" height="{h}" rx="14" fill="{PAPER}"/>
+<path d="M0 0H{W}V7H0Z" fill="{RED}"/>
+<g class="f" {delay(0)}>
+ <circle class="live" cx="48" cy="48" r="4" fill="{RED}"/>
+ <text x="62" y="52" font-family="{MONO}" font-size="12" letter-spacing="1.2" fill="{MUTED}">FULL-STACK WEB DEVELOPER · MOROCCO</text>
+</g>
+<text class="r" {delay(.15)} x="42" y="188" font-family="{SERIF}" font-size="112" letter-spacing="-3" fill="{INK}">Aymane</text>
+<defs><linearGradient id="redshine" x1="0" x2="1"><stop offset="0" stop-color="{RED_DARK}"/><stop offset=".5" stop-color="{RED}"/><stop offset="1" stop-color="{RED_DARK}"/><animateTransform attributeName="gradientTransform" type="translate" values="-1 0;1 0;-1 0" dur="7s" repeatCount="indefinite"/></linearGradient></defs>
+<text class="r" {delay(.3)} x="42" y="285" font-family="{SERIF}" font-size="112" font-style="italic" letter-spacing="-2" fill="url(#redshine)">Chokri</text>
+<g class="r" {delay(.55)}>
+ {lines_svg(48,337,["I build useful web applications,","and keep learning by building projects."],27,f'font-family="{SANS}" font-size="18" fill="{INK_SOFT}"')}
+</g>
+<g class="f" {delay(.8)}>
+ <text x="48" y="399" font-family="{MONO}" font-size="13" fill="{INK}">github.com/aymanechoukri</text>
+ <text x="255" y="399" font-family="{MONO}" font-size="13" fill="{RED}">↗</text>
+</g>
+<g transform="translate(530 28)">{portrait_svg}</g>
+"""
+    write("hero.svg",svg(W,h,body,"Aymane Chokri — Full-stack web developer in Morocco"))
 
-def worlds():
-    entries=[("01","BUILD","Interfaces & applications",RED),("02","CONNECT","APIs & data",INK),("03","LEARN","New tools & ideas","#B08A2E")]
-    parts=[]
-    for i,(num,title,desc,color) in enumerate(entries):
-        x=8+i*300
-        parts.append(f'<g class="rise" style="animation-delay:{i*.15}s"><rect x="{x}" y="8" width="284" height="150" rx="12" fill="{PAPER}" stroke="#D9D1C5"/><text x="{x+18}" y="34" class="mono" font-size="10" fill="{MUTED}">{num} / AYMANE&#39;S WORLD</text><text x="{x+18}" y="91" class="serif" font-size="36" fill="{color}">{title}</text><text x="{x+18}" y="122" class="mono" font-size="10" fill="{INK}">{desc}</text></g>')
-    (CARDS/"worlds.svg").write_text(doc(900,166,"".join(parts)),encoding="utf-8")
+TILE_W,TILE_H=880/3-8,210
+def count_up(value,unit,x,y,attrs,begin):
+    match=re.match(r"([\d.]+)(.*)",value)
+    if not match: return f'<text x="{x}" y="{y}" {attrs}>{escape(value)} <tspan font-style="italic">{escape(unit)}</tspan></text>'
+    number=float(match.group(1)); suffix=match.group(2); frames=18; parts=[]
+    if os.getenv("STATIC"):
+        return f'<text x="{x}" y="{y}" {attrs}>{escape(value)} <tspan font-style="italic">{escape(unit)}</tspan></text>'
+    for i in range(frames+1):
+        progress=1-(1-i/frames)**3
+        shown=value if i==frames else f"{number*progress:.0f}{suffix}"
+        show_at=begin+1.1*i/frames
+        hide="" if i==frames else f'<set attributeName="opacity" to="0" begin="{begin+1.1*(i+1)/frames:.3f}s"/>'
+        parts.append(f'<text x="{x}" y="{y}" {attrs} opacity="0">{escape(shown)} <tspan font-style="italic">{escape(unit)}</tspan><set attributeName="opacity" to="1" begin="{show_at:.3f}s"/>{hide}</text>')
+    return "".join(parts)
+
+def tile(name,label,color,foreground,value,unit,description,stagger,index):
+    desc="".join(
+      f'<text class="r" {delay(stagger+.75+i*.1)} x="24" y="{150+i*20}" font-family="{SANS}" font-size="13" fill="{foreground}">{escape(row)}</text>'
+      for i,row in enumerate(wrap(description,34))
+    )
+    body=f"""
+<defs>
+ <clipPath id="clip"><rect width="{TILE_W}" height="{TILE_H}" rx="14"/></clipPath>
+ <linearGradient id="shine" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".32"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+</defs>
+<g class="ti" {delay(stagger)}>
+ <g clip-path="url(#clip)">
+  <rect width="{TILE_W}" height="{TILE_H}" rx="14" fill="{color}"/>
+  <rect class="sh" x="0" y="-10" width="72" height="{TILE_H+20}" fill="url(#shine)" style="animation-delay:{stagger+1.4:.2f}s"/>
+ </g>
+ <text class="r" {delay(stagger+.35)} x="24" y="38" font-family="{MONO}" font-size="12" letter-spacing="1.2" fill="{foreground}">{label}</text>
+ <text class="r" {delay(stagger+.5)} x="250" y="38" font-family="{MONO}" font-size="14" fill="{foreground}">↗</text>
+ <g class="r" {delay(stagger+.4)}>{count_up(value,unit,22,112,f'font-family="{SERIF}" font-size="42" fill="{foreground}"',stagger+.4)}</g>
+ {desc}
+</g>
+"""
+    write(name+".svg",svg(TILE_W,TILE_H,body,f"{label}: {value} {unit}. {description}",left=0) if False else svg(TILE_W,TILE_H,body,f"{label}: {value} {unit}. {description}"))
+
+def load_data():
+    if not DATA.exists(): raise FileNotFoundError("Run scripts/fetch_contributions.py first.")
+    return json.loads(DATA.read_text(encoding="utf-8"))
 
 def activity(data):
-    buckets=[0]*12
-    for item in data["days"]:
-        month=int(item["date"][5:7]); buckets[month-1]+=item["contributionCount"]
-    maxv=max(buckets) or 1; labels=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"]; bars=[]
-    for i,val in enumerate(buckets):
-        x=290+i*48; h=85*val/maxv
-        bars.append(f'<rect x="{x}" y="{140-h:.1f}" width="27" height="{h:.1f}" rx="3" fill="{RED}" opacity="{.4+.6*val/maxv:.2f}"><animate attributeName="height" from="0" to="{h:.1f}" dur=".7s" begin="{i*.05}s" fill="freeze"/></rect><text x="{x+13}" y="159" text-anchor="middle" class="mono" font-size="8" fill="{MUTED}">{labels[i]}</text>')
-    body=f'<rect width="900" height="190" rx="16" fill="{PAPER}"/><text x="28" y="35" class="mono" font-size="10" letter-spacing="2" fill="{MUTED}">THE YEAR IN CONTRIBUTIONS</text><text x="28" y="88" class="serif" font-size="42" fill="{RED}">{data["total"]:,}</text><text x="28" y="111" class="mono" font-size="10" fill="{INK}">CONTRIBUTIONS</text><path d="M260 48V160" stroke="#D9D1C5"/>{"".join(bars)}'
-    (CARDS/"activity.svg").write_text(doc(900,190,body),encoding="utf-8")
+    monthly=data["monthly"][-12:]
+    if not monthly: raise ValueError("Contribution data has no monthly totals")
+    best=max(monthly,key=lambda row:row["total"])
+    top=max(1,best["total"])
+    base=290; x0=36; bw=40; gap=9; bars=[]
+    for i,item in enumerate(monthly):
+        height=max(3,round(item["total"]/top*130))
+        x=x0+i*(bw+gap)
+        month=datetime.date.fromisoformat(item["month"]+"-01").strftime("%b")
+        color=RED if item is best else "#b9afa4"
+        bars.append(f'<rect class="g" {delay(2.1+i*.06)} x="{x}" y="{base-height}" width="{bw}" height="{height}" rx="4" fill="{color}"><title>{month}: {item["total"]} contributions</title></rect><text class="f" {delay(2.15+i*.06)} x="{x+bw/2}" y="312" text-anchor="middle" font-family="{MONO}" font-size="10" fill="{MUTED}">{month}</text>')
+    stats=[
+      (str(data["current_streak"]["length"]),"day current streak"),
+      (str(data["active_days"]),"active days"),
+      (str(data["best_day"]["count"]),"contributions on best day")]
+    stat_svg=[]
+    for i,(value,label) in enumerate(stats):
+        y=108+i*68
+        stat_svg.append(f'<g class="r" {delay(2.7+i*.12)}><text x="632" y="{y}" font-family="{SERIF}" font-size="38" fill="{RED}">{value}</text><text x="632" y="{y+22}" font-family="{SANS}" font-size="12" fill="{MUTED}">{label}</text></g>')
+    body=f'<rect width="{W}" height="340" rx="14" fill="{PAPER}"/><text class="f" {delay(1.9)} x="38" y="54" font-family="{MONO}" font-size="11" letter-spacing="1" fill="{MUTED}">THE LAST 12 MONTHS ON GITHUB</text><text class="r" {delay(2)} x="36" y="108" font-family="{SERIF}" font-size="48" fill="{INK}">{data["total_contributions"]:,} <tspan font-style="italic">contributions</tspan></text><path d="M610 90V306" stroke="{RULE}"/>{"".join(bars)}{"".join(stat_svg)}'
+    write("activity.svg",svg(W,340,body,"Monthly contributions, streak and activity statistics"))
 
+LEVELS=[PAPER_DARK,"#f0d6d1","#e5aaa2","#d8786e",RED,"#811e22"]
 def heatmap(data):
-    days=data["days"][-371:]; cells=[]
-    for i,item in enumerate(days):
-        x=25+(i//7)*14; y=44+(i%7)*14; count=item["contributionCount"]
-        opacity=.12 if count==0 else min(.98,.25+count/12)
-        cells.append(f'<rect x="{x}" y="{y}" width="10" height="10" rx="2" fill="{RED}" opacity="{opacity:.2f}"/>')
-    body=f'<rect width="900" height="170" rx="16" fill="{PAPER}"/><text x="25" y="27" class="mono" font-size="10" letter-spacing="2" fill="{MUTED}">A YEAR OF SHOWING UP</text>{"".join(cells)}<text x="25" y="158" class="mono" font-size="9" fill="{MUTED}">LESS</text><rect x="70" y="148" width="10" height="10" rx="2" fill="{RED}" opacity=".12"/><rect x="86" y="148" width="10" height="10" rx="2" fill="{RED}" opacity=".45"/><rect x="102" y="148" width="10" height="10" rx="2" fill="{RED}" opacity=".75"/><rect x="118" y="148" width="10" height="10" rx="2" fill="{RED}"/><text x="138" y="158" class="mono" font-size="9" fill="{MUTED}">MORE</text>'
-    (CARDS/"heatmap.svg").write_text(doc(900,170,body),encoding="utf-8")
+    days=data["days"][-371:]
+    first=datetime.date.fromisoformat(days[0]["date"])
+    lead=(first.weekday()+1)%7
+    cell,step,gx,gy=12,15,42,92
+    rects=[]; month_labels=[]; seen=set()
+    for i,day in enumerate(days):
+        col,row=divmod(i+lead,7)
+        dt=datetime.date.fromisoformat(day["date"])
+        if dt.day<=7 and (dt.year,dt.month) not in seen and row==0:
+            seen.add((dt.year,dt.month)); month_labels.append((col,dt.strftime("%b")))
+        count=day["count"]
+        level=0 if count==0 else 1 if count<=5 else 2 if count<=15 else 3 if count<=30 else 4 if count<=50 else 5
+        rects.append(f'<rect class="p" {delay(1+col*.02+row*.015)} x="{gx+col*step}" y="{gy+row*step}" width="{cell}" height="{cell}" rx="3" fill="{LEVELS[level]}"><title>{day["date"]}: {count} contributions</title></rect>')
+    cols=(len(days)+lead+6)//7; right=gx+cols*step-3
+    labels="".join(f'<text x="{gx+col*step}" y="{gy+7*step+16}" font-family="{MONO}" font-size="10" fill="{MUTED}">{month}</text>' for col,month in month_labels if col<cols-12)
+    lx=right-len(LEVELS)*14
+    legend="".join(f'<rect x="{lx+i*14}" y="{gy+7*step+6}" width="11" height="11" rx="2" fill="{color}"/>' for i,color in enumerate(LEVELS))
+    h=gy+7*step+44
+    body=f'<rect width="{W}" height="{h}" rx="14" fill="{PAPER}"/><text class="r" {delay(.8)} x="42" y="58" font-family="{SERIF}" font-size="34" fill="{INK}">Every day, <tspan font-style="italic" fill="{RED}">in red</tspan></text><text class="f" {delay(.8)} x="{right}" y="57" text-anchor="end" font-family="{MONO}" font-size="11" fill="{MUTED}">REFRESHED DAILY</text>{"".join(rects)}<g class="f" {delay(2.3)}>{labels}<text x="{lx-8}" y="{gy+7*step+16}" text-anchor="end" font-family="{MONO}" font-size="10" fill="{MUTED}">less</text>{legend}<text x="{lx+len(LEVELS)*14+2}" y="{gy+7*step+16}" font-family="{MONO}" font-size="10" fill="{MUTED}">more</text></g>'
+    write("heatmap.svg",svg(W,h,body,"GitHub contribution heatmap in red"))
+
+REPOS=[
+ ("DevScope","GitHub developer discovery, public profiles and candidate shortlisting.","JavaScript",RED),
+ ("internship-platform-frontend","Student and company dashboards with internship application workflows.","React",INK),
+ ("Tachkila-v2-Effectif-Matchs","Football team composition and match information.","JavaScript",GOLD),
+]
+def repo_stars():
+    result={}
+    for name,*_ in REPOS:
+        try:
+            response=requests.get(f"https://api.github.com/repos/{USER}/{name}",timeout=12)
+            if response.ok: result[name]=response.json().get("stargazers_count",0)
+        except requests.RequestException:
+            pass
+    return result
+
+def repo_card(index,name,description,language,accent,stars):
+    width=880/3-8; height=176
+    metadata=f"{language}  ·  ★ {stars}" if stars else language
+    body=f'<rect width="{width}" height="{height}" rx="14" fill="{PAPER}"/><g class="r" {delay(4.6+index*.12)}><rect x="24" y="30" width="8" height="8" rx="2" fill="{accent}"/><text x="40" y="39" font-family="{SANS}" font-weight="600" font-size="17" fill="{INK}">{escape(name)}</text>{lines_svg(24,72,wrap(description,34),21,f"font-family=\\"{SANS}\\" font-size=\\"13\\" fill=\\"{INK_SOFT}\\"")}<text x="24" y="152" font-family="{MONO}" font-size="11" fill="{MUTED}">{metadata}</text></g>'
+    write("repo-"+name+".svg",svg(width,height,body,name+": "+description,left=0))
+
+def section_title():
+    for theme,foreground in [("light",INK),("dark","#f0ece6")]:
+        body=f'<text class="r" {delay(4.4)} x="2" y="46" font-family="{SERIF}" font-size="34" fill="{foreground}">What I’m <tspan font-style="italic">building</tspan></text>'
+        write(f"title-coding-{theme}.svg",svg(W,64,body,"What I'm building",bottom=0))
 
 def main():
-    hero(); worlds()
-    try:
-        data=contributions()
-        activity(data); heatmap(data)
-        (ROOT/"data").mkdir(exist_ok=True)
-        (ROOT/"data/contributions.json").write_text(json.dumps(data,indent=2),encoding="utf-8")
-    except Exception as exc:
-        print("Contribution update skipped:",exc)
-        if not (CARDS/"activity.svg").exists():
-            activity({"total":0,"days":[]})
-            heatmap({"days":[{"contributionCount":0} for _ in range(371)]})
-    print("SVG profile cards rendered.")
+    data=load_data()
+    hero()
+    tile("build","BUILD",RED,"#ffffff","3","projects","Three selected projects from my GitHub portfolio.",3.1,0)
+    tile("brand","CODE",INK,"#ffffff","API","driven","Web apps connected to public APIs and external services.",3.35,1)
+    tile("learn","LEARN",GOLD,INK,"2026","focus","React, JavaScript, PHP, Laravel and MySQL.",3.6,2)
+    activity(data); heatmap(data); section_title()
+    stars=repo_stars()
+    for i,(name,description,language,accent) in enumerate(REPOS):
+        repo_card(i,name,description,language,accent,stars.get(name,0))
 
-if __name__=="__main__": main()
+if __name__=="__main__":
+    main()
