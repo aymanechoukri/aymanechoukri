@@ -72,8 +72,10 @@ def ascii_portrait():
         raise FileNotFoundError("Run prep_photo.py and make_ascii_svg.py first.")
     source_svg = source.read_text(encoding="utf-8")
     rows = re.findall(r'<text xml:space="preserve"[^>]*\\by="([\\d.]+)"[^>]*>(.*?)</text>', source_svg, re.S)
+    # The source avatar has dark artwork at its far left/right edges; trim those
+    # margins so they do not become two distracting vertical ASCII bars.
     return "".join(
-        f'<text class="f" style="animation-delay:{.18+i*.012:.3f}s" x="0" y="{float(y)+10:.2f}" font-family="{MONO}" font-size="5.8" xml:space="preserve" fill="{RED}">{row}</text>'
+        f'<text class="f" style="animation-delay:{.18+i*.012:.3f}s" x="0" y="{float(y)+10:.2f}" font-family="{MONO}" font-size="5.8" textLength="320" lengthAdjust="spacing" xml:space="preserve" fill="{RED}">{row[11:-11]}</text>'
         for i, (y, row) in enumerate(rows)
     )
 
