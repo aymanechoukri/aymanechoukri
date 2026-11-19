@@ -24,6 +24,10 @@ jobs:
         env:
           GH_PROFILE_USER: aymanechoukri
         run: python scripts/fetch_contributions.py
+      - name: Prepare portrait and render ASCII art
+        run: |
+          python scripts/prep_photo.py
+          python scripts/make_ascii_svg.py
       - name: Render profile SVG cards
         run: python scripts/render_readme_cards.py
       - name: Commit refreshed cards
