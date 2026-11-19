@@ -99,7 +99,7 @@ def hero():
  <text x="48" y="399" font-family="{MONO}" font-size="13" fill="{INK}">github.com/aymanechoukri</text>
  <text x="255" y="399" font-family="{MONO}" font-size="13" fill="{RED}">↗</text>
 </g>
-<g transform="translate(535 38)">{portrait_svg}</g>
+<g transform="translate(535 38) scale(1 .42)">{portrait_svg}</g>
 """
     write("hero.svg",svg(W,h,body,"Aymane Chokri — Full-stack web developer in Morocco"))
 
