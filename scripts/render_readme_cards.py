@@ -4,7 +4,7 @@ import datetime, json, os, re
 from html import escape
 from pathlib import Path
 import requests
-from PIL import Image, ImageOps
+from PIL import Image, ImageEnhance, ImageOps
 
 ROOT=Path(__file__).resolve().parents[1]
 DATA=ROOT/"data/contributions.json"
@@ -60,25 +60,31 @@ def wrap(text,limit):
         if row and len(row)+len(word)+1>limit:
             rows.append(row); row=word
         else: row=f"{row} {word}".strip()
-    return rows+[row] if row else rows
+    return rows+[row] if row else []
 
 def lines_svg(x,y,rows,line_height,attrs):
     return "".join(f'<text x="{x}" y="{y+i*line_height}" {attrs}>{escape(row)}</text>' for i,row in enumerate(rows))
 
 def ascii_portrait():
+    """Create a higher-detail red ASCII portrait without cutting off the face."""
     image_path=ROOT/"assets/aymane-profile-avatar.jpg"
     image=Image.open(image_path).convert("L")
-    image=ImageOps.fit(image,(54,36),method=Image.Resampling.LANCZOS)
-    ramp="@%#*+=-:. "
+    # Keep the complete photo; padding is preferable to cropping the hair/chin.
+    image=ImageOps.pad(image,(76,54),method=Image.Resampling.LANCZOS,color=245,centering=(0.5,0.46))
+    image=ImageOps.autocontrast(image,cutoff=2)
+    image=ImageEnhance.Contrast(image).enhance(1.35)
+    # A broader ramp preserves more subtle facial shading than the old 10-character ramp.
+    ramp="@#W$9876543210?!abc;:+=-,. "
     rows=[]
     for y in range(image.height):
         chars=[]
         for x in range(image.width):
             brightness=image.getpixel((x,y))
-            chars.append(ramp[min(len(ramp)-1,brightness*(len(ramp)-1)//255)])
+            index=round((255-brightness)*(len(ramp)-1)/255)
+            chars.append(ramp[max(0,min(len(ramp)-1,index))])
         rows.append("".join(chars))
     return "".join(
-      f'<text class="f" style="animation-delay:{.2+i*.035:.2f}s" x="0" y="{66+i*8}" font-family="{MONO}" font-size="7.2" letter-spacing="0.25" fill="{RED}">{escape(row)}</text>'
+      f'<text class="f" style="animation-delay:{.18+i*.018:.2f}s" x="0" y="{48+i*6.35:.2f}" font-family="{MONO}" font-size="5.8" letter-spacing="0" xml:space="preserve" fill="{RED}">{escape(row)}</text>'
       for i,row in enumerate(rows)
     )
 
@@ -102,7 +108,7 @@ def hero():
  <text x="48" y="399" font-family="{MONO}" font-size="13" fill="{INK}">github.com/aymanechoukri</text>
  <text x="255" y="399" font-family="{MONO}" font-size="13" fill="{RED}">↗</text>
 </g>
-<g transform="translate(545 76)">{portrait_svg}</g>
+<g transform="translate(535 38)">{portrait_svg}</g>
 """
     write("hero.svg",svg(W,h,body,"Aymane Chokri — Full-stack web developer in Morocco"))
 
