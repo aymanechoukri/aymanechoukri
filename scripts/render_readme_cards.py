@@ -11,7 +11,7 @@ no external requests). Fonts are subset WOFFs in fonts/ (SIL OFL).
 
 Live numbers come from data/contributions.json (fetch_contributions.py). The
 brand and blog numbers are set by hand below; they come from data/stats.json in
-the avivashishta.com repo.
+the github.com/aymanechoukri repo.
 
 Run by .github/workflows/update-profile-art.yml after fetch_contributions.py.
 """
@@ -169,7 +169,7 @@ def hero():
 <rect width="{W}" height="{h}" rx="14" fill="{PAPER}"/>
 <g class="f" {d(0)}>
   <rect class="live" x="48" y="49" width="8" height="8" rx="2" fill="{TECH}"/>
-  <text x="66" y="57" font-family="{MONO}" font-size="12" letter-spacing="1" fill="{MUTED}">FULLSTACK ENGINEER AT DOCK</text>
+  <text x="66" y="57" font-family="{MONO}" font-size="12" letter-spacing="1" fill="{MUTED}">FULL-STACK WEB DEVELOPER · MOROCCO</text>
 </g>
 <text class="r" {d(0.15)} x="44" y="190" font-family="{SERIF}" font-size="116" letter-spacing="-2.5" fill="{INK}">Aymane</text>
 <text class="r" {d(0.3)} x="44" y="290" font-family="{SERIF}" font-style="italic" font-size="116" letter-spacing="-2.5" fill="url(#shine)">Chokri</text>
@@ -376,7 +376,7 @@ def heatmap(data):
     h = gy + 7 * step + 44
     body = f"""
 <rect width="{W}" height="{h}" rx="14" fill="{PAPER}"/>
-<text class="r" {d(0.8)} x="42" y="62" font-family="{SERIF}" font-size="34" fill="{INK}">Every day, <tspan font-style="italic" fill="{TECH}">in blue</tspan></text>
+<text class="r" {d(0.8)} x="42" y="62" font-family="{SERIF}" font-size="34" fill="{INK}">Every day, <tspan font-style="italic" fill="{TECH}">in red</tspan></text>
 <text class="f" {d(0.8)} x="{right}" y="60" text-anchor="end" font-family="{MONO}" font-size="12" letter-spacing="1" fill="{MUTED}">REFRESHED DAILY</text>
 {''.join(cells)}
 <g class="f" {d(2.4)}>{labels}
@@ -407,7 +407,7 @@ if __name__ == "__main__":
     hero()
     tile("build", "BUILD", TECH, "#ffffff", "3", "projects",
          "Three selected projects from my GitHub portfolio.", 3.1, 0)
-    tile("brand", "BRAND", STUDIO, "#ffffff", REEL_VIEWS, "driven",
+    tile("brand", "CODE", STUDIO, "#ffffff", REEL_VIEWS, "driven",
          "Web applications connected to APIs and external services.", 3.35, 1)
     tile("learn", "LEARN", LEARN, INK, BLOG_READERS, "focus",
          "React, JavaScript, PHP, Laravel and MySQL.", 3.6, 2)
