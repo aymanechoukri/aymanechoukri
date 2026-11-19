@@ -21,6 +21,30 @@ import numpy as np
 from PIL import Image
 from rembg import remove
 
+from io import BytesIO
+import requests
+
+# Keep the README portrait in sync with the actual GitHub profile picture,
+# then remove its background to create a transparent PNG for the hero card.
+AVATAR_URL = "https://avatars.githubusercontent.com/u/190209614?v=4"
+CUTOUT_OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "aymane-avatar-cutout.png")
+
+def make_avatar_cutout():
+    response = requests.get(AVATAR_URL, timeout=30)
+    response.raise_for_status()
+    avatar = Image.open(BytesIO(response.content)).convert("RGBA")
+    cutout = remove(avatar)
+    alpha = cutout.getchannel("A")
+    bbox = alpha.getbbox()
+    if bbox:
+        cutout = cutout.crop(bbox)
+    cutout.thumbnail((720, 720), Image.Resampling.LANCZOS)
+    os.makedirs(os.path.dirname(CUTOUT_OUT), exist_ok=True)
+    cutout.save(CUTOUT_OUT, optimize=True)
+    print("wrote transparent GitHub avatar", CUTOUT_OUT, cutout.size)
+
+make_avatar_cutout()
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 INP = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "..", "assets", "aymane-profile-avatar.jpg")
 OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(HERE, "..", "assets", "aymane-profile-prepped.png")
