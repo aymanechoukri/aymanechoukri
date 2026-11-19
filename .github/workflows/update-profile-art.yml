@@ -1,5 +1,6 @@
 name: Update profile art
 
+# Refresh the cards daily and whenever the profile source changes.
 "on":
   schedule:
     - cron: "17 6 * * *"
@@ -18,20 +19,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install renderer dependencies
-        run: pip install -r scripts/requirements.txt Pillow==10.4.0
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
       - name: Fetch public GitHub contribution data
         env:
           GH_PROFILE_USER: aymanechoukri
         run: python scripts/fetch_contributions.py
-      - name: Prepare portrait and render ASCII art
+      - name: Prepare portrait and generate ASCII artwork
         run: |
           python scripts/prep_photo.py
           python scripts/make_ascii_svg.py
-      - name: Render profile SVG cards
+      - name: Render contribution heatmap and stats
+        run: |
+          python scripts/render_heatmap_svg.py
+          python scripts/render_stats_svg.py
+      - name: Render README cards
         run: python scripts/render_readme_cards.py
       - name: Commit refreshed cards
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: refresh animated profile cards [skip ci]"
-          file_pattern: "data/contributions.json cards/*.svg"
+          commit_message: "chore: refresh profile art [skip ci]"
+          file_pattern: "data/contributions.json assets/aymane-profile-prepped.png assets/aymane-ascii.svg contrib-heatmap.svg stats.svg cards/*.svg"
