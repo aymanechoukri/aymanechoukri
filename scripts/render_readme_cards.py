@@ -144,8 +144,11 @@ def text_lines(x, y, lines, lh, attrs):
 # ---- 1 · hero -----------------------------------------------------------------
 def hero():
     h = 420
-    avatar_data = open(os.path.join(ROOT, "assets", "aymane-profile-avatar.jpg"), "rb").read()
-    avatar_b64 = base64.b64encode(avatar_data).decode("ascii")
+    import requests
+    avatar_url = "https://avatars.githubusercontent.com/u/190209614?v=4"
+    avatar_response = requests.get(avatar_url, timeout=20)
+    avatar_response.raise_for_status()
+    avatar_b64 = base64.b64encode(avatar_response.content).decode("ascii")
     body = f"""
 <defs>
   <linearGradient id="shine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="600" y2="0">
