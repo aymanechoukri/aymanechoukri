@@ -51,7 +51,7 @@ def worlds():
     parts=[]
     for i,(num,title,desc,color) in enumerate(entries):
         x=8+i*300
-        parts.append(f'<g class="rise" style="animation-delay:{i*.15}s"><rect x="{x}" y="8" width="284" height="150" rx="12" fill="{PAPER}" stroke="#D9D1C5"/><text x="{x+18}" y="34" class="mono" font-size="10" fill="{MUTED}">{num} / AYMANE\\'S WORLD</text><text x="{x+18}" y="91" class="serif" font-size="36" fill="{color}">{title}</text><text x="{x+18}" y="122" class="mono" font-size="10" fill="{INK}">{desc}</text></g>')
+        parts.append(f'<g class="rise" style="animation-delay:{i*.15}s"><rect x="{x}" y="8" width="284" height="150" rx="12" fill="{PAPER}" stroke="#D9D1C5"/><text x="{x+18}" y="34" class="mono" font-size="10" fill="{MUTED}">{num} / AYMANE&#39;S WORLD</text><text x="{x+18}" y="91" class="serif" font-size="36" fill="{color}">{title}</text><text x="{x+18}" y="122" class="mono" font-size="10" fill="{INK}">{desc}</text></g>')
     (CARDS/"worlds.svg").write_text(doc(900,166,"".join(parts)),encoding="utf-8")
 
 def activity(data):
