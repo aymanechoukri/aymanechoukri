@@ -71,7 +71,7 @@ def ascii_portrait():
     if not source.exists():
         raise FileNotFoundError("Run prep_photo.py and make_ascii_svg.py first.")
     source_svg = source.read_text(encoding="utf-8")
-    rows = re.findall(r'<text xml:space="preserve"[^>]*\\by="([\\d.]+)"[^>]*>(.*?)</text>', source_svg, re.S)
+    rows = re.findall(r'<text xml:space="preserve"[^>]*\by="([\d.]+)"[^>]*>(.*?)</text>', source_svg, re.S)
     # The source avatar has dark artwork at its far left/right edges; trim those
     # margins so they do not become two distracting vertical ASCII bars.
     return "".join(
