@@ -4,6 +4,7 @@ import datetime, json, os, re
 from html import escape
 from pathlib import Path
 import requests
+from PIL import Image, ImageOps
 
 ROOT=Path(__file__).resolve().parents[1]
 DATA=ROOT/"data/contributions.json"
@@ -64,26 +65,26 @@ def wrap(text,limit):
 def lines_svg(x,y,rows,line_height,attrs):
     return "".join(f'<text x="{x}" y="{y+i*line_height}" {attrs}>{escape(row)}</text>' for i,row in enumerate(rows))
 
+def ascii_portrait():
+    image_path=ROOT/"assets/aymane-profile-avatar.jpg"
+    image=Image.open(image_path).convert("L")
+    image=ImageOps.fit(image,(46,30),method=Image.Resampling.LANCZOS)
+    ramp="@%#*+=-:. "
+    rows=[]
+    for y in range(image.height):
+        chars=[]
+        for x in range(image.width):
+            brightness=image.getpixel((x,y))
+            chars.append(ramp[min(len(ramp)-1,brightness*len(ramp)//256)])
+        rows.append("".join(chars))
+    return "".join(
+      f'<text class="f" style="animation-delay:{.2+i*.035:.2f}s" x="0" y="{84+i*8}" font-family="{MONO}" font-size="7.4" letter-spacing="0.5" fill="{RED}">{escape(row)}</text>'
+      for i,row in enumerate(rows)
+    )
+
 def hero():
     h=420
-    portrait=[
-      "     .----------------.",
-      "     |  $ whoami      |",
-      "     |  aymane        |",
-      "     |                |",
-      "     |   .--------.   |",
-      "     |  /  o    o  \\  |",
-      "     | |     ^      | |",
-      "     |  \\  '----'  /  |",
-      "     |   '--------'   |",
-      "     |   /|  CODE |\\  |",
-      "     |  /_|_______|_\\ |",
-      "     '----------------'",
-    ]
-    portrait_svg="".join(
-      f'<text class="f" style="animation-delay:{.2+i*.07:.2f}s" x="0" y="{92+i*17}" font-family="{MONO}" font-size="12" fill="{RED}">{escape(row)}</text>'
-      for i,row in enumerate(portrait)
-    )
+    portrait_svg=ascii_portrait()
     body=f"""
 <rect width="{W}" height="{h}" rx="14" fill="{PAPER}"/>
 <path d="M0 0H{W}V7H0Z" fill="{RED}"/>
@@ -101,7 +102,7 @@ def hero():
  <text x="48" y="399" font-family="{MONO}" font-size="13" fill="{INK}">github.com/aymanechoukri</text>
  <text x="255" y="399" font-family="{MONO}" font-size="13" fill="{RED}">↗</text>
 </g>
-<g transform="translate(530 28)">{portrait_svg}</g>
+<g transform="translate(545 76)">{portrait_svg}</g>
 """
     write("hero.svg",svg(W,h,body,"Aymane Chokri — Full-stack web developer in Morocco"))
 
