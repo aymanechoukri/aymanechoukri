@@ -144,11 +144,9 @@ def text_lines(x, y, lines, lh, attrs):
 # ---- 1 · hero -----------------------------------------------------------------
 def hero():
     h = 420
-    import requests
-    avatar_url = "https://avatars.githubusercontent.com/u/190209614?v=4"
-    avatar_response = requests.get(avatar_url, timeout=20)
-    avatar_response.raise_for_status()
-    avatar_b64 = base64.b64encode(avatar_response.content).decode("ascii")
+    avatar_path = os.path.join(ROOT, "assets", "aymane-avatar-cutout.png")
+    with open(avatar_path, "rb") as avatar_file:
+        avatar_b64 = base64.b64encode(avatar_file.read()).decode("ascii")
     body = f"""
 <defs>
   <linearGradient id="shine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="600" y2="0">
@@ -173,16 +171,7 @@ def hero():
   <text x="48" y="396" font-family="{MONO}" font-size="13" fill="{INK}">github.com/aymanechoukri</text>
   <text class="nu" x="186" y="396" font-family="{MONO}" font-size="13" fill="{TECH}">&#8599;</text>
 </g>
-<defs>
-  <clipPath id="portraitClip"><rect x="528" y="54" width="310" height="310" rx="22"/></clipPath>
-  <linearGradient id="portraitFrame" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="{TECH}"/><stop offset="1" stop-color="{LEARN}"/>
-  </linearGradient>
-</defs>
-<rect x="520" y="46" width="326" height="326" rx="28" fill="url(#portraitFrame)" opacity=".95"/>
-<g clip-path="url(#portraitClip)">
-  <image href="data:image/jpeg;base64,{avatar_b64}" x="528" y="54" width="310" height="310" preserveAspectRatio="xMidYMid meet"/>
-</g>
+<image href="data:image/png;base64,{avatar_b64}" x="520" y="24" width="350" height="380" preserveAspectRatio="xMidYMid meet"/>
 """
     write("hero.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
                           "Aymane Chokri. Full-stack web developer in Morocco."))
