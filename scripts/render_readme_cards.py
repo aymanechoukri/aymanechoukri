@@ -195,6 +195,8 @@ TILE_W, TILE_H = 880 / 3 - 8, 210  # 285.33: two 12px gaps across the row
 def count_up(num, word, x, y, attrs, begin, dur=1.1, frames=18):
     """Number counts up from 0 with SMIL <set> frames (works inside <img>), easing out."""
     m = re.match(r"([\d.]+)(.*)", num)
+    if not m:
+        return f'<text x="{x}" y="{y}" {attrs}>{escape(num)} <tspan font-style="italic">{escape(word)}</tspan></text>'
     val, suf = float(m.group(1)), m.group(2)
     dec = len(m.group(1).split(".")[1]) if "." in m.group(1) else 0
     tail = f' <tspan font-style="italic">{escape(word)}</tspan>'
